@@ -1,4 +1,4 @@
-package org.ahmedhammad.tradyzertemp;
+package org.ahmedhammad.tradyzer;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
