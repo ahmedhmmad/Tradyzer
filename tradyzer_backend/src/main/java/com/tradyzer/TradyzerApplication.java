@@ -1,13 +1,11 @@
-package org.ahmedhammad.tradyzer;
+package com.tradyzer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TradyzerBackendApplication {
-
+public class TradyzerApplication {
     public static void main(String[] args) {
-        SpringApplication.run(TradyzerBackendApplication.class, args);
+        SpringApplication.run(TradyzerApplication.class, args);
     }
-
 }
