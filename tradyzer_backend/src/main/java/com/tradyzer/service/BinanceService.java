@@ -2,6 +2,8 @@ package com.tradyzer.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradyzer.entity.PriceHistory;
+import com.tradyzer.repository.PriceHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,6 +23,32 @@ public class BinanceService {
     public BinanceService(WebClient binanceWebClient) {
         this.binanceWebClient = binanceWebClient;
         this.objectMapper = new ObjectMapper();
+    }
+    @Autowired
+    private PriceHistoryRepository priceHistoryRepository;
+
+    // حفظ سعر في قاعدة البيانات
+    public PriceHistory savePriceHistory(Map<String, Object> tickerData) {
+        PriceHistory history = new PriceHistory();
+        history.setSymbol((String) tickerData.get("symbol"));
+        history.setPrice(new BigDecimal(tickerData.get("lastPrice").toString()));
+        history.setPriceChangePercent(Double.parseDouble(tickerData.get("priceChangePercent").toString()));
+        history.setVolume(new BigDecimal(tickerData.get("quoteVolume").toString()));
+        history.setHigh24h(new BigDecimal(tickerData.get("highPrice").toString()));
+        history.setLow24h(new BigDecimal(tickerData.get("lowPrice").toString()));
+
+        return priceHistoryRepository.save(history);
+    }
+
+    // تحديث الأسعار وحفظها
+    public void updateAndSavePrices() {
+        List<Map<String, Object>> cryptos = getRequiredCryptos();
+
+        for (Map<String, Object> crypto : cryptos) {
+            if (!crypto.containsKey("error")) {
+                savePriceHistory(crypto);
+            }
+        }
     }
 
     // الحصول على سعر عملة واحدة
